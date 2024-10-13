@@ -111,9 +111,9 @@ class QRGenerator
 
         // ###### DRAW AND SAVE QR CODE ######
         $image = $this->createImageFromMatrix($masked_map);
-        $resizedImage = $this->sharpResizeImage($image, $scale);
-        // imagepng($resizedImage, $filename); // for saving the image
-        $this->image = $resizedImage;
+        $resized_image = $this->sharpResizeImage($image, $scale);
+        // imagepng($resized_image, $filename); // for saving the image
+        $this->image = $resized_image;
 
         return [
             'mask' => $mask,
@@ -158,24 +158,24 @@ class QRGenerator
      * Resize an image pixel perfect.
      * This method is useful to resize the QR code image to a bigger size.
      * It avoids the interpolation of the image, keeping the pixels sharp.
-     * @param GdImage $sourceImage The source image to be resized.
+     * @param GdImage $source_image The source image to be resized.
      * @param int $scale The scale factor.
      * @return GdImage The resized image.
      */
-    function sharpResizeImage($sourceImage, $scale)
+    function sharpResizeImage($source_image, $scale)
     {
-        $srcWidth = imagesx($sourceImage);
-        $srcHeight = imagesy($sourceImage);
+        $src_width = imagesx($source_image);
+        $src_height = imagesy($source_image);
 
-        $newWidth = $srcWidth * $scale;
-        $newHeight = $srcHeight * $scale;
+        $new_width = $src_width * $scale;
+        $new_height = $src_height * $scale;
 
-        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+        $resized_image = imagecreatetruecolor($new_width, $new_height);
 
         // Resample
-        imagecopyresized($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $srcWidth, $srcHeight);
+        imagecopyresized($resized_image, $source_image, 0, 0, 0, 0, $new_width, $new_height, $src_width, $src_height);
 
-        return $resizedImage;
+        return $resized_image;
     }
 
     /**
@@ -207,10 +207,10 @@ class QRGenerator
 
                     $block[] = $codeword;
                 }
-                $errorCorrectionBytes = $RS->encode(array_map('bindec', $block));
-                $errorCorrectionBytes = array_map(fn($x) => str_pad(decbin($x), 8, '0', STR_PAD_LEFT), $errorCorrectionBytes);
+                $error_correction_bytes = $RS->encode(array_map('bindec', $block));
+                $error_correction_bytes = array_map(fn($x) => str_pad(decbin($x), 8, '0', STR_PAD_LEFT), $error_correction_bytes);
 
-                $blocks[] = ['data' => $block, 'error' => $errorCorrectionBytes];
+                $blocks[] = ['data' => $block, 'error' => $error_correction_bytes];
             }
         }
 
@@ -453,42 +453,42 @@ class QRGenerator
         $modules_size = count($realization_map);
         $bits = $this->format_information[$ecc_level][$mask];
 
-        $leftToRightBits = $bits;
+        $left_to_right_bits = $bits;
 
         $i = 8;
         for ($j = 0; $j < 8; $j++) {
             if ($j == 6) continue;
-            $length = strlen($leftToRightBits);
-            $realization_map[$i][$j] = $leftToRightBits[0];
-            $leftToRightBits = substr($leftToRightBits, 1, $length - 1);
+            $length = strlen($left_to_right_bits);
+            $realization_map[$i][$j] = $left_to_right_bits[0];
+            $left_to_right_bits = substr($left_to_right_bits, 1, $length - 1);
         }
 
-        $rightToLeftBits = strrev($leftToRightBits);
+        $right_to_left_bits = strrev($left_to_right_bits);
 
         $i = 8;
         for ($j = $modules_size - 1; $j >= $modules_size - 8; $j--) {
-            $length = strlen($rightToLeftBits);
-            $realization_map[$i][$j] = $rightToLeftBits[0];
-            $rightToLeftBits = substr($rightToLeftBits, 1, $length - 1);
+            $length = strlen($right_to_left_bits);
+            $realization_map[$i][$j] = $right_to_left_bits[0];
+            $right_to_left_bits = substr($right_to_left_bits, 1, $length - 1);
         }
 
-        $downToUpBits = $bits;
+        $down_to_up_bits = $bits;
 
         $j = 8;
         for ($i = $modules_size - 1; $i >= $modules_size - 7; $i--) {
-            $length = strlen($downToUpBits);
-            $realization_map[$i][$j] = $downToUpBits[0];
-            $downToUpBits = substr($downToUpBits, 1, $length - 1);
+            $length = strlen($down_to_up_bits);
+            $realization_map[$i][$j] = $down_to_up_bits[0];
+            $down_to_up_bits = substr($down_to_up_bits, 1, $length - 1);
         }
 
-        $upToDownBits = strrev($downToUpBits);
+        $up_to_down_bits = strrev($down_to_up_bits);
 
         $j = 8;
         for ($i = 0; $i < 9; $i++) {
             if ($i == 6) continue;
-            $length = strlen($upToDownBits);
-            $realization_map[$i][$j] = $upToDownBits[0];
-            $upToDownBits = substr($upToDownBits, 1, $length - 1);
+            $length = strlen($up_to_down_bits);
+            $realization_map[$i][$j] = $up_to_down_bits[0];
+            $up_to_down_bits = substr($up_to_down_bits, 1, $length - 1);
         }
     }
 
