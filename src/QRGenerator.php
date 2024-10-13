@@ -4,6 +4,11 @@ require 'ReedSolomonGenerator.php';
 
 error_reporting(E_ERROR | E_PARSE); // Disable warnings
 
+/**
+ * QR Code Generator.
+ * To generate a QR code, you need to create an instance of the QRGenerator class and call the generate method.
+ * Then you can access the image property to get the generated QR code.
+ */
 class QRGenerator
 {
     public $codewords = null;
