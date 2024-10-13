@@ -1,0 +1,16 @@
+{
+    "name": "teracksito/qr-generator",
+    "description": "QR Generator",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Teracksito\\QrGenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TeRacksito"
+        }
+    ],
+    "require": {}
+}

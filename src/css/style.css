@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+main {
+    padding: 0.5rem 0.5rem;
+    transition: padding 0.1s;
+}
+
+@media (min-width: 768px) {
+    main {
+        padding: 1rem 5rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    main {
+        padding: 1rem 10rem;
+    }
+}
+
+section {
+    background-color: #fff;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.checkbox-inline {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.checkbox-inline input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.checkbox-inline label {
+    margin-right: 1rem;
+}
+
+#qr {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+img {
+    max-height: 100vh;
+    max-width: 100%;
+}
+
+
+.inline {
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(79px, 1fr));
+}
+
+.checkbox-inline {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+}
