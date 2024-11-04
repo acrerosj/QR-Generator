@@ -1,6 +1,8 @@
 <?php
+namespace Teracksito\QrGenerator;
 
-require 'ReedSolomonGenerator.php';
+use Exception;
+use GdImage;
 
 error_reporting(E_ERROR | E_PARSE); // Disable warnings
 
@@ -15,7 +17,7 @@ class QRGenerator
     private $ecc_level = null;
     private $version = null;
 
-    private $versions = null;
+    // private $versions = null;
     private $alignment_positions = null;
     private $version_information = null;
     private $format_information = null;
@@ -28,22 +30,22 @@ class QRGenerator
     function __construct()
     {
         // QR Levels. Determines de amount of data and error correction codewords, divided in blocks
-        $json = file_get_contents('data/qr_levels.json');
-        $data = json_decode($json, true);
-        $this->versions = $data;
+        // $json = file_get_contents(__DIR__ . '/data/qr_levels.json');
+        // $data = json_decode($json, true);
+        // $this->versions = $data;
 
         // QR Alignment patterns. Determines the position of the alignment patterns in function of the QR version
-        $json = file_get_contents('data/alignment_locations.json');
+        $json = file_get_contents(__DIR__ . '/data/alignment_locations.json');
         $data = json_decode($json, true);
         $this->alignment_positions = $data;
 
         // QR Version information. Determines the version information bits in function of the QR version, for version 7 and above
-        $json = file_get_contents('data/version_information.json');
+        $json = file_get_contents(__DIR__ . '/data/version_information.json');
         $data = json_decode($json, true);
         $this->version_information = $data;
 
         // QR Format information. Determines the format information bits in function of the error correction level and mask
-        $json = file_get_contents('data/format_information.json');
+        $json = file_get_contents(__DIR__ . '/data/format_information.json');
         $data = json_decode($json, true);
         $this->format_information = $data;
 
@@ -81,7 +83,9 @@ class QRGenerator
         $this->ecc_level = $ecc_level;
 
         // ###### DATA ENCODING ######
-        $this->version = $this->determineVersion($data);
+        //$this->version = $this->determineVersion($data);
+        $this->version = VersionManager::determineVersion($data, $this->ecc_level);
+        echo "<h1>$this->version</h1>";
 
         $this->codewords = $this->normalizeCodewords($this->dataToCodewords($data, $this->version));
 
@@ -190,7 +194,8 @@ class QRGenerator
      */
     private function generateBlocksWithECC(): array
     {
-        $schemas = $this->versions[$this->version][$this->ecc_level];
+        //$schemas = $this->versions[$this->version][$this->ecc_level];
+        $schemas = VersionManager::getSchema($this->version, $this->ecc_level);
         $blocks = [];
 
         $codeword_index = 0;
@@ -725,21 +730,21 @@ class QRGenerator
      * @return int The version that best fits the data
      * @throws Exception If the data is too long to be encoded in any version
      */
-    public function determineVersion(string $data): int
-    {
-        $length = strlen($data) + 2;
-        foreach ($this->versions as $version => $ecc_levels) {
-            $schemas = $ecc_levels[$this->ecc_level];
-            $max_codewords = array_reduce($schemas, function ($acc, $schema) {
-                return $acc + $schema['data'] * $schema['blocks'];
-            }, 0);
-            if (($version > 9 ? $length + 1 : $length) <= $max_codewords) {
-                return $version;
-            }
-        }
+    // public function determineVersion(string $data): int
+    // {
+    //     $length = strlen($data) + 2;
+    //     foreach ($this->versions as $version => $ecc_levels) {
+    //         $schemas = $ecc_levels[$this->ecc_level];
+    //         $max_codewords = array_reduce($schemas, function ($acc, $schema) {
+    //             return $acc + $schema['data'] * $schema['blocks'];
+    //         }, 0);
+    //         if (($version > 9 ? $length + 1 : $length) <= $max_codewords) {
+    //             return $version;
+    //         }
+    //     }
 
-        throw new Exception('Data is too long to be encoded in any version.');
-    }
+    //     throw new Exception('Data is too long to be encoded in any version.');
+    // }
 
     /**
      * Determine the size of the modules matrix.

@@ -1,6 +1,9 @@
 <?php
+require '../vendor/autoload.php';
+
+use Teracksito\QrGenerator\QRGenerator;
+
 if (!empty($_POST['data']) && !empty($_POST['ecc'])) {
-    require_once "QRGenerator.php";
     $qr = new QRGenerator();
 
     $data = $_POST['data'];

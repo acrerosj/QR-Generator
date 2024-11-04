@@ -1,5 +1,5 @@
 <?php
-
+namespace Teracksito\QrGenerator;
 /**
  * Reed-Solomon error correction encoder
  */
